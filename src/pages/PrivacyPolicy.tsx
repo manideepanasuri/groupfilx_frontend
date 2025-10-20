@@ -1,19 +1,6 @@
-import {Helmet} from "react-helmet-async";
-
-
 function PrivacyPolicy() {
   return (
     <>
-      <Helmet>
-        <title>Privacy Policy | Story Dumps</title>
-        <meta name="description" content="This page explains how Story Dumps collects, uses, and protects your data. Read our privacy practices here." />
-        <meta name="robots" content="index, follow" />
-        <meta property="og:title" content="Privacy Policy | Story Dumps" />
-        <meta property="og:description" content="Read about how we handle your data and protect your privacy." />
-        <meta property="og:url" content="https://www.storydumps/privacy-policy" />
-        <meta property="og:type" content="website" />
-        <link rel="canonical" href="https://www.storydumps/privacy-policy" />
-      </Helmet>
     <div className="max-w-4xl mx-auto px-4 py-8 ">
       <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
 

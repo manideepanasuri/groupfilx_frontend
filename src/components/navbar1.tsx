@@ -1,4 +1,4 @@
-import { BookTextIcon, Menu} from "lucide-react";
+import { BookTextIcon, Menu } from "lucide-react";
 
 import {
   Accordion,
@@ -22,15 +22,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {ModeToggle} from "@/components/mode-toggle.tsx";
-import {Link} from "react-router-dom";
-import {userAuthStore} from "@/store/userAuthStore.tsx";
-import {toast} from "sonner";
+import { ModeToggle } from "@/components/mode-toggle.tsx";
+import { Link } from "react-router-dom";
+import { userAuthStore } from "@/store/userAuthStore.tsx";
+import { toast } from "sonner";
 
 interface MenuItem {
   title: string;
   url: string;
-  authentiation:boolean;
+  authentiation: boolean;
   description?: string;
   icon?: React.ReactNode;
   items?: MenuItem[];
@@ -64,8 +64,9 @@ const Navbar1 = ({
     title: "Story Dump",
   },
   menu = [
-    { title: "Generate", url: "/home",authentiation: true },
-    {title: "History",url: "/History",authentiation: true },
+    { title: "Groups", url: "/groups", authentiation: true },
+    { title: "Recommendations", url: "/recommendations", authentiation: true },
+    { title: "Search", url: "/search", authentiation: true },
     {
       title: "Features",
       url: "/#Feature17",
@@ -87,13 +88,13 @@ const Navbar1 = ({
     signup: { title: "Sign up", url: "/signup" },
   },
 }: Navbar1Props) => {
-  const {is_authenticated,logout}=userAuthStore()
-  function  handleLogout() {
-    const toast_id=toast.loading("Logging Out")
-    logout().then(()=>{toast.success("Logged Out",{id:toast_id})})
+  const { is_authenticated, logout } = userAuthStore()
+  function handleLogout() {
+    const toast_id = toast.loading("Logging Out")
+    logout().then(() => { toast.success("Logged Out", { id: toast_id }) })
   }
   return (
-    <section className="py-4 sticky top-0 bg-background z-50">
+    <section className="p-4 sticky top-0 bg-background z-50">
       <div className="">
         {/* Desktop Menu */}
         <nav className="hidden justify-between lg:flex">
@@ -109,25 +110,25 @@ const Navbar1 = ({
               <NavigationMenu>
                 <NavigationMenuList>
                   {menu
-                    ?.filter(itm=>!itm.authentiation)
+                    ?.filter(itm => !itm.authentiation)
                     .map((item) => renderMenuItem(item))}
                   {
                     menu
-                      ?.filter(itm=>itm.authentiation&&is_authenticated)
-                      .map(item=>renderMenuItem(item))
+                      ?.filter(itm => itm.authentiation && is_authenticated)
+                      .map(item => renderMenuItem(item))
                   }
                 </NavigationMenuList>
               </NavigationMenu>
             </div>
           </div>
           <div className="flex gap-2 items-center justify-between">
-            <ModeToggle/>
-            {is_authenticated?
+            <ModeToggle />
+            {is_authenticated ?
               <>
-              <Button onClick={handleLogout} size="sm">
-              Log Out
-            </Button>
-                <Button asChild  size="sm">
+                <Button onClick={handleLogout} size="sm">
+                  Log Out
+                </Button>
+                <Button asChild size="sm">
                   <Link to="/change-password">
                     Change password
                   </Link>
@@ -135,12 +136,12 @@ const Navbar1 = ({
               </>
               :
               <>
-            <Button asChild variant="outline" size="sm">
-              <Link to={auth.login.url}>{auth.login.title}</Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link to={auth.signup.url}>{auth.signup.title}</Link>
-            </Button></>}
+                <Button asChild variant="outline" size="sm">
+                  <Link to={auth.login.url}>{auth.login.title}</Link>
+                </Button>
+                <Button asChild size="sm">
+                  <Link to={auth.signup.url}>{auth.signup.title}</Link>
+                </Button></>}
           </div>
         </nav>
 
@@ -149,25 +150,25 @@ const Navbar1 = ({
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link to={logo.url} className="flex items-center gap-2">
-              <BookTextIcon/>
+              <BookTextIcon />
               <span className="text-lg font-semibold tracking-tighter">
                 {logo.title}
               </span>
             </Link>
             <Sheet>
               <div className=" flex items-center gap-2">
-                <ModeToggle/>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Menu className="size-4" />
-                </Button>
-              </SheetTrigger>
+                <ModeToggle />
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Menu className="size-4" />
+                  </Button>
+                </SheetTrigger>
               </div>
               <SheetContent className="overflow-y-auto">
                 <SheetHeader>
                   <SheetTitle>
                     <Link to={logo.url} className="flex items-center gap-2">
-                      <BookTextIcon/>
+                      <BookTextIcon />
                     </Link>
                   </SheetTitle>
                 </SheetHeader>
@@ -178,26 +179,26 @@ const Navbar1 = ({
                     className="flex w-full flex-col gap-4"
                   >
                     {menu
-                      ?.filter(itm=>!itm.authentiation)
+                      ?.filter(itm => !itm.authentiation)
                       .map((item) => renderMobileMenuItem(item))}
                     {
                       menu
-                        ?.filter(itm=>itm.authentiation&&is_authenticated)
-                        .map(item=>renderMobileMenuItem(item))
+                        ?.filter(itm => itm.authentiation && is_authenticated)
+                        .map(item => renderMobileMenuItem(item))
                     }
                   </Accordion>
 
                   <div className="flex flex-col gap-3">
-                    {is_authenticated?<>
-                        <Button onClick={handleLogout} >
-                          Log Out
-                        </Button>
-                        <Button asChild>
-                          <Link to="/change-password">
-                            Change password
-                          </Link>
-                        </Button>
-                      </>:
+                    {is_authenticated ? <>
+                      <Button onClick={handleLogout} >
+                        Log Out
+                      </Button>
+                      <Button asChild>
+                        <Link to="/change-password">
+                          Change password
+                        </Link>
+                      </Button>
+                    </> :
                       <>
                         <Button asChild variant="outline" >
                           <Link to={auth.login.url}>{auth.login.title}</Link>
@@ -225,10 +226,10 @@ const renderMenuItem = (item: MenuItem) => {
           {
             item.items
               .map((subItem) => (
-            <NavigationMenuLink asChild key={subItem.title} className="w-80">
-              <SubMenuLink item={subItem} />
-            </NavigationMenuLink>
-          ))}
+                <NavigationMenuLink asChild key={subItem.title} className="w-80">
+                  <SubMenuLink item={subItem} />
+                </NavigationMenuLink>
+              ))}
         </NavigationMenuContent>
       </NavigationMenuItem>
     );
