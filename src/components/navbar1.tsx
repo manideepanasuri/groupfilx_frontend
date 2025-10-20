@@ -60,8 +60,8 @@ const Navbar1 = ({
   logo = {
     url: "/#Hero3",
     src: "/logo.svg",
-    alt: "logo",
-    title: "Story Dump",
+    alt: "GroupFlix logo",
+    title: "GroupFlix",
   },
   menu = [
     { title: "Groups", url: "/groups", authentiation: true },
@@ -81,21 +81,23 @@ const Navbar1 = ({
       title: "About Us",
       url: "/#about-us",
       authentiation: false,
-    }
+    },
   ],
   auth = {
     login: { title: "Login", url: "/login" },
-    signup: { title: "Sign up", url: "/signup" },
+    signup: { title: "Sign Up", url: "/signup" },
   },
 }: Navbar1Props) => {
-  const { is_authenticated, logout } = userAuthStore()
+  const { is_authenticated, logout } = userAuthStore();
   function handleLogout() {
-    const toast_id = toast.loading("Logging Out")
-    logout().then(() => { toast.success("Logged Out", { id: toast_id }) })
+    const toast_id = toast.loading("Logging Out");
+    logout().then(() => {
+      toast.success("Logged Out", { id: toast_id });
+    });
   }
   return (
     <section className="p-4 sticky top-0 bg-background z-50">
-      <div className="">
+      <div>
         {/* Desktop Menu */}
         <nav className="hidden justify-between lg:flex">
           <div className="flex items-center gap-6">
@@ -110,38 +112,36 @@ const Navbar1 = ({
               <NavigationMenu>
                 <NavigationMenuList>
                   {menu
-                    ?.filter(itm => !itm.authentiation)
+                    ?.filter((itm) => !itm.authentiation)
                     .map((item) => renderMenuItem(item))}
-                  {
-                    menu
-                      ?.filter(itm => itm.authentiation && is_authenticated)
-                      .map(item => renderMenuItem(item))
-                  }
+                  {menu
+                    ?.filter((itm) => itm.authentiation && is_authenticated)
+                    .map((item) => renderMenuItem(item))}
                 </NavigationMenuList>
               </NavigationMenu>
             </div>
           </div>
           <div className="flex gap-2 items-center justify-between">
             <ModeToggle />
-            {is_authenticated ?
+            {is_authenticated ? (
               <>
                 <Button onClick={handleLogout} size="sm">
                   Log Out
                 </Button>
                 <Button asChild size="sm">
-                  <Link to="/change-password">
-                    Change password
-                  </Link>
+                  <Link to="/change-password">Change password</Link>
                 </Button>
               </>
-              :
+            ) : (
               <>
                 <Button asChild variant="outline" size="sm">
                   <Link to={auth.login.url}>{auth.login.title}</Link>
                 </Button>
                 <Button asChild size="sm">
                   <Link to={auth.signup.url}>{auth.signup.title}</Link>
-                </Button></>}
+                </Button>
+              </>
+            )}
           </div>
         </nav>
 
@@ -156,7 +156,7 @@ const Navbar1 = ({
               </span>
             </Link>
             <Sheet>
-              <div className=" flex items-center gap-2">
+              <div className="flex items-center gap-2">
                 <ModeToggle />
                 <SheetTrigger asChild>
                   <Button variant="outline" size="icon">
@@ -179,33 +179,31 @@ const Navbar1 = ({
                     className="flex w-full flex-col gap-4"
                   >
                     {menu
-                      ?.filter(itm => !itm.authentiation)
+                      ?.filter((itm) => !itm.authentiation)
                       .map((item) => renderMobileMenuItem(item))}
-                    {
-                      menu
-                        ?.filter(itm => itm.authentiation && is_authenticated)
-                        .map(item => renderMobileMenuItem(item))
-                    }
+                    {menu
+                      ?.filter((itm) => itm.authentiation && is_authenticated)
+                      .map((item) => renderMobileMenuItem(item))}
                   </Accordion>
 
                   <div className="flex flex-col gap-3">
-                    {is_authenticated ? <>
-                      <Button onClick={handleLogout} >
-                        Log Out
-                      </Button>
-                      <Button asChild>
-                        <Link to="/change-password">
-                          Change password
-                        </Link>
-                      </Button>
-                    </> :
+                    {is_authenticated ? (
                       <>
-                        <Button asChild variant="outline" >
+                        <Button onClick={handleLogout}>Log Out</Button>
+                        <Button asChild>
+                          <Link to="/change-password">Change password</Link>
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button asChild variant="outline">
                           <Link to={auth.login.url}>{auth.login.title}</Link>
                         </Button>
-                        <Button asChild >
+                        <Button asChild>
                           <Link to={auth.signup.url}>{auth.signup.title}</Link>
-                        </Button></>}
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               </SheetContent>
@@ -223,13 +221,11 @@ const renderMenuItem = (item: MenuItem) => {
       <NavigationMenuItem key={item.title}>
         <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
         <NavigationMenuContent className="bg-popover text-popover-foreground">
-          {
-            item.items
-              .map((subItem) => (
-                <NavigationMenuLink asChild key={subItem.title} className="w-80">
-                  <SubMenuLink item={subItem} />
-                </NavigationMenuLink>
-              ))}
+          {item.items.map((subItem) => (
+            <NavigationMenuLink asChild key={subItem.title} className="w-80">
+              <SubMenuLink item={subItem} />
+            </NavigationMenuLink>
+          ))}
         </NavigationMenuContent>
       </NavigationMenuItem>
     );

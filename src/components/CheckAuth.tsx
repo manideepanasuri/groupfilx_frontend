@@ -22,7 +22,7 @@ export function AllowUnAuthenticated({children}:Props)  {
   const {is_authenticated}=userAuthStore()
   const navigate = useNavigate();
   useEffect(() => {
-    if (is_authenticated){navigate("/home")}
+    if (is_authenticated){navigate("/groups")}
   }, [is_authenticated, navigate]);
   return (
     <>

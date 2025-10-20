@@ -86,23 +86,22 @@ const MovieDetails: React.FC = () => {
     }
 
     return (
-        <div className="relative min-h-screen bg-background transition-colors duration-300 overflow-hidden">
-            {/* Blurred Backdrop */}
+        <div className="relative min-h-screen bg-background transition-colors duration-300 overflow-hidden pb-32">
+            {/* Fullscreen Blurred Backdrop */}
             <div
-                className="fixed inset-0 bg-center bg-cover"
+                className="absolute inset-0 bg-center bg-cover"
                 style={{
                     backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
-                    backgroundAttachment: 'fixed',
                     filter: 'blur(10px) brightness(0.4)',
-                    transform: 'scale(1.05)',
-                    zIndex: 0
+                    transform: 'scale(1.1)',
+                    zIndex: 0,
                 }}
             />
 
             {/* Dark Gradient Overlay */}
-            <div className="fixed inset-0 bg-gradient-to-b from-background/70 via-background/60 to-background/80 dark:from-slate-950/70 dark:via-slate-950/60 dark:to-slate-950/80 transition-colors duration-300 z-0" />
+            <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/60 to-background/80 dark:from-slate-950/70 dark:via-slate-950/60 dark:to-slate-950/80 transition-colors duration-300 z-0" />
 
-            <div className="max-w-7xl mx-auto p-8 flex flex-col md:flex-row gap-8 relative z-10">
+            <div className="relative max-w-7xl mx-auto p-8 flex flex-col md:flex-row gap-8 z-10">
                 {/* Left: Poster */}
                 <div className="flex-shrink-0 w-full md:w-1/3 lg:w-1/4">
                     <img
@@ -134,8 +133,8 @@ const MovieDetails: React.FC = () => {
                                 key={i}
                                 size={28}
                                 className={`cursor-pointer transition-all duration-200 ${(hoverRating || rating) >= i
-                                    ? 'fill-yellow-400 text-yellow-400 scale-110'
-                                    : 'text-muted-foreground hover:text-foreground'
+                                        ? 'fill-yellow-400 text-yellow-400 scale-110'
+                                        : 'text-muted-foreground hover:text-foreground'
                                     } ${submittingRating ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 onMouseEnter={() => !submittingRating && setHoverRating(i)}
                                 onMouseLeave={() => setHoverRating(0)}
@@ -150,6 +149,7 @@ const MovieDetails: React.FC = () => {
             </div>
         </div>
     )
+
 }
 
 export default MovieDetails

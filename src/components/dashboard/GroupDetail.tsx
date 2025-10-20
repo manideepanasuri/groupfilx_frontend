@@ -6,59 +6,59 @@ import { Group } from '@/app_types';
 import ChatTab from './ChatTab';
 import VotingTab from './VotingTab';
 import MembersTab from './MembersTab';
+import { userAuthStore } from '@/store/userAuthStore';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 interface GroupDetailProps {
   group: Group;
-  currentUser: string;
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  chatMessage: string;
-  setChatMessage: (message: string) => void;
-  movieTitle: string;
-  setMovieTitle: (title: string) => void;
-  newMemberName: string;
-  setNewMemberName: (name: string) => void;
   onBackToDashboard: () => void;
-  onLeaveGroup: () => void;
-  onSendMessage: () => void;
-  onAddMovie: () => void;
-  onVoteMovie: (movieId: number) => void;
-  onDeleteMovie: (movieId: number) => void;
-  onAddMember: () => void;
-  onDeleteMember: (member: string) => void;
+  setSignal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const GroupDetail: React.FC<GroupDetailProps> = ({
   group,
-  currentUser,
   activeTab,
   setActiveTab,
-  chatMessage,
-  setChatMessage,
-  movieTitle,
-  setMovieTitle,
-  newMemberName,
-  setNewMemberName,
   onBackToDashboard,
-  onLeaveGroup,
-  onSendMessage,
-  onAddMovie,
-  onVoteMovie,
-  onDeleteMovie,
-  onAddMember,
-  onDeleteMember,
+  setSignal,
 }) => {
+  const { tokens } = userAuthStore();
+  const navigate = useNavigate();
+
+  const onLeaveGroup = async () => {
+    try {
+      const url = import.meta.env.VITE_BACKEND_HOST + 'groupchat/leave/';
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${tokens.access}`,
+        },
+        body: JSON.stringify({ group_id: group.id }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.message || 'Failed to leave group');
+      }
+
+      toast.success('Successfully left the group');
+      setSignal((prev) => !prev);
+      navigate('/groups');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to leave group');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto p-8">
-        {/* Header */}
         <div className="flex justify-between items-start mb-8">
           <div>
-            <Button
-              variant="ghost"
-              onClick={onBackToDashboard}
-              className="mb-4"
-            >
+            <Button variant="ghost" onClick={onBackToDashboard} className="mb-4">
               ← Back to Dashboard
             </Button>
             <h1 className="text-4xl font-bold text-foreground mb-2">{group.name}</h1>
@@ -69,7 +69,6 @@ const GroupDetail: React.FC<GroupDetailProps> = ({
           </Button>
         </div>
 
-        {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList>
             <TabsTrigger value="chat">Chat</TabsTrigger>
@@ -77,40 +76,16 @@ const GroupDetail: React.FC<GroupDetailProps> = ({
             <TabsTrigger value="members">Members</TabsTrigger>
           </TabsList>
 
-          {/* Chat Tab */}
           <TabsContent value="chat">
-            <ChatTab
-              group={group}
-              currentUser={currentUser}
-              chatMessage={chatMessage}
-              setChatMessage={setChatMessage}
-              onSendMessage={onSendMessage}
-            />
+            <ChatTab group={group} />
           </TabsContent>
 
-          {/* Voting Tab */}
           <TabsContent value="voting">
-            <VotingTab
-              group={group}
-              currentUser={currentUser}
-              movieTitle={movieTitle}
-              setMovieTitle={setMovieTitle}
-              onAddMovie={onAddMovie}
-              onVoteMovie={onVoteMovie}
-              onDeleteMovie={onDeleteMovie}
-            />
+            <VotingTab group={group} />
           </TabsContent>
 
-          {/* Members Tab */}
           <TabsContent value="members">
-            <MembersTab
-              group={group}
-              currentUser={currentUser}
-              newMemberName={newMemberName}
-              setNewMemberName={setNewMemberName}
-              onAddMember={onAddMember}
-              onDeleteMember={onDeleteMember}
-            />
+            <MembersTab groupId={group.id} />
           </TabsContent>
         </Tabs>
       </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronRight, MessageSquare, Users } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Group } from '@/app_types';
@@ -26,17 +26,6 @@ const GroupCard: React.FC<GroupCardProps> = ({ group, onOpen }) => {
           <p className="text-sm text-foreground/80 truncate">
             {group.members.join(', ')}
           </p>
-        </div>
-
-        <div className="flex gap-4 text-sm">
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <MessageSquare size={16} />
-            {group.messages.length} messages
-          </div>
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <Users size={16} />
-            {group.movies.length} movies
-          </div>
         </div>
 
         <Button onClick={onOpen} className="w-full">

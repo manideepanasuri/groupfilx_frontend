@@ -4,9 +4,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import {z} from "zod"
+import { z } from "zod"
 import { useForm } from "react-hook-form"
-import {changePasswordSchema, signupSchema} from "@/app_types/formtypes.ts"
+import { changePasswordSchema, signupSchema } from "@/app_types/formtypes.ts"
 
 import {
   Form,
@@ -16,49 +16,49 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import {userAuthStore} from "@/store/userAuthStore.tsx";
+import { userAuthStore } from "@/store/userAuthStore.tsx";
 import { toast } from "sonner"
-import {useEffect} from "react";
-import {Link, useNavigate, useSearchParams} from "react-router-dom";
-import {Loader2Icon} from "lucide-react";
+import { useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Loader2Icon } from "lucide-react";
 
 export function SignupForm({
-                            className,
-                            ...props
-                          }: React.ComponentProps<"div">) {
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
 
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
       name: "",
-      email:"",
-      password:"",
-      confirmPassword:"",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
   })
-  const {signup,tokens,is_loading}=userAuthStore()
-  const navigate=useNavigate()
-  useEffect(()=>{
-    if(tokens.access!=""){
-      navigate("/home");
+  const { signup, tokens, is_loading } = userAuthStore()
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (tokens.access != "") {
+      navigate("/groups");
     }
   })
   function onSubmit(values: z.infer<typeof signupSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    const tost_id=toast.loading("Please wait...")
+    const tost_id = toast.loading("Please wait...")
     console.log(values)
-    signup(values).then(res=>{toast.success(res,{id:tost_id})}).catch(err=>{toast.error(err.message,{id:tost_id})})
+    signup(values).then(res => { toast.success(res, { id: tost_id }) }).catch(err => { toast.error(err.message, { id: tost_id }) })
 
   }
-  const {get_google_url}=userAuthStore()
-  function handleGoogle(){
-    const tost_id=toast.loading("Redirecting to Google")
-    get_google_url().then((res)=>{
-        window.location.href=res
-      }
-    ).catch(err=>{
-      toast.error(err.message,{id:tost_id})
+  const { get_google_url } = userAuthStore()
+  function handleGoogle() {
+    const tost_id = toast.loading("Redirecting to Google")
+    get_google_url().then((res) => {
+      window.location.href = res
+    }
+    ).catch(err => {
+      toast.error(err.message, { id: tost_id })
     })
   }
 
@@ -71,10 +71,8 @@ export function SignupForm({
 
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col items-center text-center">
-                  <h1 className="text-2xl font-bold">Welcome</h1>
-                  <p className="text-muted-foreground text-balance">
-                    Create account
-                  </p>
+                  <h1 className="text-2xl font-bold">Welcome to GroupFlix</h1>
+                  <p className="text-muted-foreground text-balance">Discover movies together.</p>
                 </div>
                 <div className="grid gap-3">
                   <FormField
@@ -137,21 +135,21 @@ export function SignupForm({
                   />
                 </div>
                 {
-                  is_loading?<Button className="w-full" type="button" disabled> <Loader2Icon className="animate-spin" /> Please wait </Button>:<Button type="submit" className="w-full">
+                  is_loading ? <Button className="w-full" type="button" disabled> <Loader2Icon className="animate-spin" /> Please wait </Button> : <Button type="submit" className="w-full">
                     Sign up
                   </Button>
                 }
 
                 <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                <span className="bg-card text-muted-foreground relative z-10 px-2">
-                  Or continue with
-                </span>
+                  <span className="bg-card text-muted-foreground relative z-10 px-2">
+                    Or continue with
+                  </span>
                 </div>
                 <div className="grid grid-cols-1">
                   {
-                    is_loading?
+                    is_loading ?
                       <Button variant="outline" type="button" disabled className="w-full">
-                        <Loader2Icon className="animate-spin"/>
+                        <Loader2Icon className="animate-spin" />
                         <span className="sr-only">Continue with Google</span>
                       </Button>
                       :
@@ -180,9 +178,9 @@ export function SignupForm({
 
           <div className="bg-muted relative hidden md:block">
             <img
-              src="/Hexagon.svg"
-              alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+              src="/auth.png"
+              alt="Authentication decorative image"
+              className="absolute inset-0 w-[100%] object-cover object-center dark:brightness-[0.5] dark:grayscale m-auto"
             />
           </div>
         </CardContent>
@@ -196,39 +194,39 @@ export function SignupForm({
 }
 
 export function ChangePassword({
-                             className,
-                             ...props
-                           }: React.ComponentProps<"div">) {
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
 
 
   const form = useForm<z.infer<typeof changePasswordSchema>>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
-      email:"",
-      password:"",
-      confirmPassword:"",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
   })
-  const {is_loading,get_change_password_url,verify_change_password}=userAuthStore()
+  const { is_loading, get_change_password_url, verify_change_password } = userAuthStore()
 
-  const navigate=useNavigate()
+  const navigate = useNavigate()
   function onSubmit(values: z.infer<typeof changePasswordSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    const tost_id=toast.loading("Please wait...")
-    get_change_password_url(values).then(res=>{toast.success(res,{id:tost_id})}).catch(err=>{toast.error(err.message,{id:tost_id})})
+    const tost_id = toast.loading("Please wait...")
+    get_change_password_url(values).then(res => { toast.success(res, { id: tost_id }) }).catch(err => { toast.error(err.message, { id: tost_id }) })
 
   }
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
   useEffect(() => {
-    if(token!=null){
-      const tost_id=toast.loading("Please wait")
-      verify_change_password(token).then(res=>{
-        toast.success(res,{id:tost_id})
+    if (token != null) {
+      const tost_id = toast.loading("Please wait")
+      verify_change_password(token).then(res => {
+        toast.success(res, { id: tost_id })
         navigate("/home")
-      }).catch(err=>{
-        toast.error(err.message,{id:tost_id})
+      }).catch(err => {
+        toast.error(err.message, { id: tost_id })
         navigate("/login")
       });
     }
@@ -293,7 +291,7 @@ export function ChangePassword({
                   />
                 </div>
                 {
-                  is_loading?<Button className="w-full" type="button" disabled> <Loader2Icon className="animate-spin" /> Please wait </Button>:<Button type="submit" className="w-full">
+                  is_loading ? <Button className="w-full" type="button" disabled> <Loader2Icon className="animate-spin" /> Please wait </Button> : <Button type="submit" className="w-full">
                     Change Password
                   </Button>
                 }
@@ -314,9 +312,9 @@ export function ChangePassword({
 
           <div className="bg-muted relative hidden md:block">
             <img
-              src="/Hexagon.svg"
-              alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+              src="/auth.png"
+              alt="Authentication decorative image"
+              className="absolute inset-0 w-[100%] object-cover object-center dark:brightness-[0.5] dark:grayscale m-auto"
             />
           </div>
         </CardContent>

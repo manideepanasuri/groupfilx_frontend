@@ -1,13 +1,8 @@
-import type {ReactNode} from "react";
-
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-
-import {
-  FooterBottom,
-} from "../../ui/footer";
-import {ModeToggle} from "@/components/mode-toggle.tsx";
-import {Link} from "react-router-dom";
-
+import { FooterBottom } from "../../ui/footer";
+import { ModeToggle } from "@/components/mode-toggle.tsx";
+import { Link } from "react-router-dom";
 
 interface FooterLink {
   text: string;
@@ -30,34 +25,8 @@ interface FooterProps {
 }
 
 export default function FooterSection({
-  // logo = <LaunchUI />,
-  // name = "Launch UI",
-  // columns = [
-  //   {
-  //     title: "Product",
-  //     links: [
-  //       { text: "Changelog", href: "https://www.launchuicomponents.com/" },
-  //       { text: "Documentation", href: "https://www.launchuicomponents.com/" },
-  //     ],
-  //   },
-  //   {
-  //     title: "Company",
-  //     links: [
-  //       { text: "About", href: "https://www.launchuicomponents.com/" },
-  //       { text: "Careers", href: "https://www.launchuicomponents.com/" },
-  //       { text: "Blog", href: "https://www.launchuicomponents.com/" },
-  //     ],
-  //   },
-  //   {
-  //     title: "Contact",
-  //     links: [
-  //       { text: "Discord", href: "https://www.launchuicomponents.com/" },
-  //       { text: "Twitter", href: "https://www.launchuicomponents.com/" },
-  //       { text: "Github", href: "https://www.launchuicomponents.com/" },
-  //     ],
-  //   },
-  // ],
-  copyright = "© 2025 Story Dump. All rights reserved",
+  // Customize or add columns here as needed
+  copyright = "© 2025 GroupFlix. All rights reserved",
   policies = [
     { text: "Privacy Policy", href: "/privacy-policy" },
     { text: "Terms of Service", href: "/terms-of-service" },
@@ -73,7 +42,7 @@ export default function FooterSection({
             <div>{copyright}</div>
             <div className="flex items-center gap-4">
               {policies.map((policy, index) => (
-                <Link key={index} to={policy.href}>
+                <Link key={index} to={policy.href} className="hover:underline">
                   {policy.text}
                 </Link>
               ))}

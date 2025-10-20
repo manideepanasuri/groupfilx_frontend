@@ -1,12 +1,12 @@
 import {
-  DollarSign,
-  MessagesSquare,
-  PersonStanding,
-  Timer,
-  Zap,
-  ZoomIn,
+  Users,
+  HeartHandshake,
+  ThumbsUp,
+  MessageCircle,
+  Sparkles,
+  Clock,
 } from "lucide-react";
-import {TopAnimation} from "@/components/top-animaiton.tsx";
+import { TopAnimation } from "@/components/top-animaiton.tsx";
 
 interface Feature {
   title: string;
@@ -21,69 +21,75 @@ interface Feature17Props {
 }
 
 const Feature17 = ({
-  heading = "Our Core Features",
-  subheading = "Features",
+  heading = "What Makes GroupFlix Unique",
+  subheading = "Core Features",
   features = [
     {
-      title: "Instant Content",
+      title: "Collaborative Recommendations",
       description:
-        "Turn Reddit stories into videos in seconds. Just input text — we handle narration, visuals, and subtitles automatically.",
-      icon: <Timer className="size-4 md:size-6" />,
+        "Blends everyone’s preferences with AI-driven consensus algorithms to recommend movies the whole group will enjoy.",
+      icon: <Users className="size-5 md:size-7 text-primary" />,
     },
     {
-      title: "AI Voiceovers",
+      title: "Mood-Based Suggestions",
       description:
-        "Realistic, expressive AI-generated voices bring your stories to life — no need to record anything.",
-      icon: <Zap className="size-4 md:size-6" />,
+        "Pick your group’s vibe—from comedy to romance—and get recommendations matched perfectly to your current mood.",
+      icon: <Sparkles className="size-5 md:size-7 text-primary" />,
     },
     {
-      title: "Clean Subtitles",
+      title: "Voting and Polling System",
       description:
-        "Auto-generated, well-timed subtitles styled for TikTok, YouTube Shorts, and Instagram Reels.",
-      icon: <ZoomIn className="size-4 md:size-6" />,
+        "Finalize what to watch with fair, real-time voting—ensuring every movie night feels democratic and fun.",
+      icon: <ThumbsUp className="size-5 md:size-7 text-primary" />,
     },
     {
-      title: "Mobile-Friendly",
+      title: "Social Discovery",
       description:
-        "Outputs are vertical, short-form videos optimized for social feeds — ready to upload and go viral.",
-      icon: <PersonStanding className="size-4 md:size-6" />,
+        "See trending movies in your circle, explore what friends are watching, and get inspired by collective taste.",
+      icon: <HeartHandshake className="size-5 md:size-7 text-primary" />,
     },
     {
-      title: "Free to Use",
+      title: "Interactive Comments",
       description:
-        "No complex pricing or paywalls — generate and share videos without worrying about hidden fees.",
-      icon: <DollarSign className="size-4 md:size-6" />,
+        "Discuss movies, share reactions, and chat live with your group—every movie becomes a shared experience.",
+      icon: <MessageCircle className="size-5 md:size-7 text-primary" />,
     },
     {
-      title: "Hands-Free Workflow",
+      title: "Weekly Trends & Insights",
       description:
-        "Just paste text or a Reddit link — everything else is fully automated, so you can focus on growing your channel.",
-      icon: <MessagesSquare className="size-4 md:size-6" />,
+        "Discover your group’s weekly top picks, most discussed films, and compatibility scores to see how your tastes align.",
+      icon: <Clock className="size-5 md:size-7 text-primary" />,
     },
   ],
 }: Feature17Props) => {
   return (
-    <section className="py-12 px-3" id="Feature17">
-      <div className="container mx-auto max-w-7xl">
-        <p className="mb-4 text-xs text-muted-foreground md:pl-5">
-          {subheading}
-        </p>
-        <h2 className="text-3xl font-medium md:pl-5 lg:text-4xl">{heading}</h2>
-        <div className="mx-auto mt-14 grid gap-x-20 gap-y-8 md:grid-cols-2 md:gap-y-6 lg:mt-20">
+    <section
+      className="relative py-16 px-6 bg-gradient-to-b from-background via-muted/10 to-background"
+      id="Feature17"
+    >
+      <div className="container mx-auto max-w-6xl">
+        <div className="text-center mb-12">
+          <p className="mb-2 text-sm uppercase tracking-widest text-primary/80">
+            {subheading}
+          </p>
+          <h2 className="text-4xl font-semibold tracking-tight lg:text-5xl gradient-text">
+            {heading}
+          </h2>
+        </div>
+
+        <div className="grid gap-x-12 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-16">
           {features.map((feature, idx) => (
-            <TopAnimation>
-              <div className="flex gap-6 rounded-lg md:block md:p-5" key={idx}>
-              <span className="mb-8 flex size-10 shrink-0 items-center justify-center rounded-full bg-accent md:size-12">
-                {feature.icon}
-              </span>
-                <div>
-                  <h3 className="font-medium md:mb-2 md:text-xl">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground md:text-base">
-                    {feature.description}
-                  </p>
+            <TopAnimation key={idx}>
+              <div className="group relative rounded-xl border border-border/30 bg-card/50 p-6 backdrop-blur-md shadow-sm hover:shadow-lg hover:border-primary/40 transition-all duration-300">
+                <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary/20 transition-all duration-300">
+                  {feature.icon}
                 </div>
+                <h3 className="font-semibold text-lg mb-2 text-foreground">
+                  {feature.title}
+                </h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {feature.description}
+                </p>
               </div>
             </TopAnimation>
           ))}

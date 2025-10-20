@@ -3,10 +3,20 @@ import { SearchIcon, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { userAuthStore } from '@/store/userAuthStore';
 import axios from 'axios';
 import { SearchJSON, Result, Genre } from '@/app_types/searchquery';
 import MovieCard from '@/components/MovieCard';
+
 
 export default function Search() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,7 +25,11 @@ export default function Search() {
   const [ascending, setAscending] = useState(false);
   const [movies, setMovies] = useState<Result[]>([]);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [nextPageUrl, setNextPageUrl] = useState<string | null>(null);
+  const [previousPageUrl, setPreviousPageUrl] = useState<string | null>(null);
   const { tokens } = userAuthStore();
+
 
   const genreMap: Genre[] = [
     { id: 1, name: 'Action' },
@@ -39,10 +53,11 @@ export default function Search() {
     { id: 19, name: 'Documentary' },
   ];
 
+
   const genres = ['All', ...genreMap.map((g) => g.name)];
   const orderOptions = ['Release Date', 'Popularity', 'Vote Count', 'Vote Average'];
 
-  //  Map frontend order options to backend field names
+
   const orderMap: Record<string, string> = {
     'Release Date': 'release_date',
     Popularity: 'popularity',
@@ -50,32 +65,40 @@ export default function Search() {
     'Vote Average': 'vote_average',
   };
 
-  const fetchMovies = async () => {
+
+  const fetchMovies = async (url?: string) => {
     try {
       setLoading(true);
-       // Map genre name → id
-      const genreObj = genreMap.find((g) => g.name === selectedGenre);
-      const genreParam = genreObj ? `&genres=${genreObj.id}` : '';
+      let finalUrl = url;
 
-      const orderingField = orderMap[orderBy];
-      const ordering = ascending ? orderingField : `-${orderingField}`;
-      const searchParam = searchTerm ? `&search=${encodeURIComponent(searchTerm)}` : '';
+      if (!url) {
+        const genreObj = genreMap.find((g) => g.name === selectedGenre);
+        const genreParam = genreObj ? `&genres=${genreObj.id}` : '';
 
-      const url = import.meta.env.VITE_BACKEND_HOST + `movies/query/?ordering=${ordering}${genreParam}${searchParam}`;
+        const orderingField = orderMap[orderBy];
+        const ordering = ascending ? orderingField : `-${orderingField}`;
+        const searchParam = searchTerm ? `&search=${encodeURIComponent(searchTerm)}` : '';
+
+        finalUrl = import.meta.env.VITE_BACKEND_HOST + `movies/query/?ordering=${ordering}${genreParam}${searchParam}`;
+      }
+
       const config = {
-        url: url,
+        url: finalUrl,
         method: 'get',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${tokens.access}`,
         },
-      }
-      const response = await axios(config)
-      console.log(response)
+      };
+
+      const response = await axios(config);
+      console.log(response);
 
       const data: SearchJSON = response.data;
 
       setMovies(data.results || []);
+      setNextPageUrl(data.next || null);
+      setPreviousPageUrl(data.previous || null);
     } catch (err) {
       console.error('Error fetching movies:', err);
     } finally {
@@ -83,17 +106,40 @@ export default function Search() {
     }
   };
 
+
   useEffect(() => {
+    setCurrentPage(1);
     fetchMovies();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, selectedGenre, orderBy, ascending]);
+
+
+  const handleNextPage = () => {
+    if (nextPageUrl) {
+      setCurrentPage((prev) => prev + 1);
+      fetchMovies(nextPageUrl);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+
+  const handlePreviousPage = () => {
+    if (previousPageUrl) {
+      setCurrentPage((prev) => prev - 1);
+      fetchMovies(previousPageUrl);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
 
   const resetFilters = () => {
     setSearchTerm('');
     setSelectedGenre('All');
     setOrderBy('Popularity');
     setAscending(false);
+    setCurrentPage(1);
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted p-8">
@@ -111,6 +157,7 @@ export default function Search() {
             />
           </div>
 
+
           {/* 🎭 Genre Filter */}
           <Select value={selectedGenre} onValueChange={setSelectedGenre}>
             <SelectTrigger className="w-[140px]">
@@ -124,6 +171,7 @@ export default function Search() {
               ))}
             </SelectContent>
           </Select>
+
 
           {/*  Ordering with arrow */}
           <div className="flex items-center gap-2">
@@ -144,6 +192,7 @@ export default function Search() {
             </Button>
           </div>
 
+
           {/*  Reset */}
           <Button variant="outline" onClick={resetFilters} className="flex items-center gap-2">
             <Filter className="w-4 h-4" />
@@ -151,15 +200,47 @@ export default function Search() {
           </Button>
         </div>
 
+
         {/*  Movie Grid */}
         {loading ? (
           <div className="text-center py-20 text-muted-foreground text-lg">Loading movies...</div>
         ) : movies.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
-            {movies.map((movie) => (
-              <MovieCard movie={movie}/>
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
+              {movies.map((movie) => (
+                <MovieCard key={movie.id} movie={movie} />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            <div className="flex justify-center mt-8">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={handlePreviousPage}
+                      disabled={!previousPageUrl}
+                      className={!previousPageUrl ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                    />
+                  </PaginationItem>
+
+                  <PaginationItem>
+                    <span className="px-4 py-2 text-muted-foreground">
+                      Page {currentPage}
+                    </span>
+                  </PaginationItem>
+
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={handleNextPage}
+                      disabled={!nextPageUrl}
+                      className={!nextPageUrl ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          </>
         ) : (
           <div className="text-center py-20 text-muted-foreground text-lg">
             {searchTerm || selectedGenre !== 'All'

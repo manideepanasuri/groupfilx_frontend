@@ -1,4 +1,3 @@
-
 import { Routes, Route } from "react-router-dom";
 import Login from "@/pages/Login.tsx";
 import Signup from "@/pages/Signup.tsx";
@@ -18,98 +17,121 @@ import TermsAndConditions from "@/pages/TermsAndConditions.tsx";
 import Search from "./pages/Search";
 import MovieDetails from "./pages/MovieDetails";
 
-
 function App() {
-  useRefreshToken()
+  useRefreshToken();
   return (
-    <div className="h-screen flex flex-col justify-between">
-      <div className="flex-1 flex flex-col">
-
-
-        <Navbar1 />
-
+    <div className="min-h-screen flex flex-col">
+      <Navbar1 />
+      <main className="flex-grow overflow-auto">
         <Routes>
-          <Route path="/" element={
-            <PageAnimated>
-              <Landing />
-            </PageAnimated>
-          } />
-          <Route path="/groups" element={
-            <AllowAuthenticated>
+          <Route
+            path="/"
+            element={
               <PageAnimated>
-                <Home />
+                <Landing />
               </PageAnimated>
-            </AllowAuthenticated>
-          } />
-          <Route path="/recommendations" element={
-            <AllowAuthenticated>
-              <PageAnimated>
-                <Recommendations />
-              </PageAnimated>
-            </AllowAuthenticated>
-          } />
-          <Route path="/search" element={
-            <AllowAuthenticated>
-              <PageAnimated>
-                <Search />
-              </PageAnimated>
-            </AllowAuthenticated>
-          } />
-          <Route path="/movies/:movieId" element={
-            <AllowAuthenticated>
-              <PageAnimated>
-                <MovieDetails/>
-              </PageAnimated>
-            </AllowAuthenticated>
-          } />
-          <Route path="/login" element={
-            <AllowUnAuthenticated>
-              <PageAnimated>
-                <Login />
-              </PageAnimated>
-            </AllowUnAuthenticated>
-          } />
-          <Route path="/signup" element={
-            <AllowUnAuthenticated>
-              <PageAnimated>
-                <Signup />
-              </PageAnimated>
-            </AllowUnAuthenticated>
-          } />
-          <Route path="/change-password" element={
-            <>
+            }
+          />
+          <Route
+            path="/groups"
+            element={
+              <AllowAuthenticated>
+                <PageAnimated>
+                  <Home />
+                </PageAnimated>
+              </AllowAuthenticated>
+            }
+          />
+          <Route
+            path="/recommendations"
+            element={
+              <AllowAuthenticated>
+                <PageAnimated>
+                  <Recommendations />
+                </PageAnimated>
+              </AllowAuthenticated>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <AllowAuthenticated>
+                <PageAnimated>
+                  <Search />
+                </PageAnimated>
+              </AllowAuthenticated>
+            }
+          />
+          <Route
+            path="/movies/:movieId"
+            element={
+              <AllowAuthenticated>
+                <PageAnimated>
+                  <MovieDetails />
+                </PageAnimated>
+              </AllowAuthenticated>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <AllowUnAuthenticated>
+                <PageAnimated>
+                  <Login />
+                </PageAnimated>
+              </AllowUnAuthenticated>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <AllowUnAuthenticated>
+                <PageAnimated>
+                  <Signup />
+                </PageAnimated>
+              </AllowUnAuthenticated>
+            }
+          />
+          <Route
+            path="/change-password"
+            element={
               <PageAnimated>
                 <ChangePasswordPage />
               </PageAnimated>
-            </>
-          } />
-          <Route path="/google-auth/success" element={
-            <AllowUnAuthenticated>
-              <PageAnimated>
-                <GoogleSuccessAuth />
-              </PageAnimated>
-            </AllowUnAuthenticated>
-          } />
-          <Route path="/privacy-policy" element={
-            <>
+            }
+          />
+          <Route
+            path="/google-auth/success"
+            element={
+              <AllowUnAuthenticated>
+                <PageAnimated>
+                  <GoogleSuccessAuth />
+                </PageAnimated>
+              </AllowUnAuthenticated>
+            }
+          />
+          <Route
+            path="/privacy-policy"
+            element={
               <PageAnimated>
                 <PrivacyPolicy />
               </PageAnimated>
-            </>
-          } />
-          <Route path="/terms-of-service" element={
-            <>
+            }
+          />
+          <Route
+            path="/terms-of-service"
+            element={
               <PageAnimated>
                 <TermsAndConditions />
               </PageAnimated>
-            </>
-          } />
+            }
+          />
         </Routes>
         <Toaster />
-      </div>
+      </main>
       <FooterSection />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
