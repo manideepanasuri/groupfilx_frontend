@@ -6,7 +6,7 @@ import Landing from "@/pages/Landing.tsx";
 import { Navbar1 } from "@/components/navbar1.tsx";
 import { PageAnimated } from "@/components/top-animaiton.tsx";
 import FooterSection from "@/components/sections/footer/default.tsx";
-import Home from "@/pages/Groups";
+// import Home from "@/pages/Groups";
 import { AllowUnAuthenticated, AllowAuthenticated } from "@/components/CheckAuth.tsx";
 import { useRefreshToken } from "@/queries/query-task.ts";
 import Recommendations from "@/pages/Recommendations";
@@ -16,6 +16,7 @@ import PrivacyPolicy from "@/pages/PrivacyPolicy.tsx";
 import TermsAndConditions from "@/pages/TermsAndConditions.tsx";
 import Search from "./pages/Search";
 import MovieDetails from "./pages/MovieDetails";
+import Groups from "@/pages/Groups";
 
 function App() {
   useRefreshToken();
@@ -37,7 +38,7 @@ function App() {
             element={
               <AllowAuthenticated>
                 <PageAnimated>
-                  <Home />
+                  <Groups/>
                 </PageAnimated>
               </AllowAuthenticated>
             }

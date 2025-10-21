@@ -1,4 +1,4 @@
-import { BookTextIcon, Menu } from "lucide-react";
+import { Menu, TvMinimalPlay } from "lucide-react";
 
 import {
   Accordion,
@@ -103,7 +103,7 @@ const Navbar1 = ({
           <div className="flex items-center gap-6">
             {/* Logo */}
             <Link to={logo.url} className="flex items-center gap-2">
-              <BookTextIcon />
+              <TvMinimalPlay />
               <span className="text-lg font-semibold tracking-tighter">
                 {logo.title}
               </span>
@@ -150,7 +150,7 @@ const Navbar1 = ({
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link to={logo.url} className="flex items-center gap-2">
-              <BookTextIcon />
+              <TvMinimalPlay />
               <span className="text-lg font-semibold tracking-tighter">
                 {logo.title}
               </span>
@@ -168,7 +168,7 @@ const Navbar1 = ({
                 <SheetHeader>
                   <SheetTitle>
                     <Link to={logo.url} className="flex items-center gap-2">
-                      <BookTextIcon />
+                      <TvMinimalPlay />
                     </Link>
                   </SheetTitle>
                 </SheetHeader>

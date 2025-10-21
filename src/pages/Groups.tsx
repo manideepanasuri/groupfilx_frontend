@@ -4,6 +4,8 @@ import { Group } from '@/app_types';
 import Dashboard from '@/components/dashboard/Dashboard';
 import GroupDetail from '@/components/dashboard/GroupDetail';
 import { userAuthStore } from '@/store/userAuthStore';
+import Loader from '@/components/Loader';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface GroupMember {
   id: number;
@@ -25,15 +27,11 @@ const Groups: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('chat');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const {tokens} = userAuthStore();
+  const { tokens } = userAuthStore();
   const [signal, setSignal] = useState<boolean>(false);
-  
-  const backendUrl = import.meta.env.VITE_BACKEND_HOST || 'http://127.0.0.1:8000/';
-  
 
   // Fetch all groups
   useEffect(() => {
-    console.log("hello fetching..........");
     setCurrentGroup(null);
     fetchGroups();
   }, [signal]);
@@ -42,7 +40,7 @@ const Groups: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const url = backendUrl + 'groupchat/create/';
+      const url = import.meta.env.VITE_BACKEND_HOST + 'groupchat/create/';
       const config = {
         method: 'get',
         url: url,
@@ -64,13 +62,11 @@ const Groups: React.FC = () => {
   const handleCreateGroup = async (name: string): Promise<void> => {
     try {
       setError(null);
-      const url = backendUrl + 'groupchat/create/';
+      const url = import.meta.env.VITE_BACKEND_HOST + 'groupchat/create/';
       const config = {
         url: url,
         method: 'post',
-        data: {
-          name: name,
-        },
+        data: { name },
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${tokens.access}`,
@@ -91,47 +87,89 @@ const Groups: React.FC = () => {
     setActiveTab('chat');
   };
 
-
   const group = groups.find((g) => g.id === currentGroup);
 
-  // Convert APIGroup to Group type for compatibility
-  const convertToGroupType = (apiGroup: APIGroup): Group => {
-    return {
-      id: apiGroup.id,
-      name: apiGroup.name,
-      members: apiGroup.members.map(m => m.name),
-      messages: [],
-      movies: [],
-    };
+  const convertToGroupType = (apiGroup: APIGroup): Group => ({
+    id: apiGroup.id,
+    name: apiGroup.name,
+    members: apiGroup.members.map((m) => m.name),
+    messages: [],
+    movies: [],
+  });
+
+  // Framer Motion variants
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+    exit: { opacity: 0, y: -20, transition: { duration: 0.3 } },
   };
 
-  if (loading && groups.length === 0) {
-    return <div className="p-8 text-center">Loading groups...</div>;
-  }
-
   return (
-    <>
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
-      {!currentGroup ? (
-        <Dashboard
-          groups={groups.map(convertToGroupType)}
-          onCreateGroup={handleCreateGroup}
-          onOpenGroup={handleOpenGroup}
-        />
-      ) : group ? (
-        <GroupDetail
-          group={convertToGroupType(group)}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          onBackToDashboard={() => setCurrentGroup(null)}
-          setSignal={setSignal}
-        />
-      ) : null}
-    </>
+    <div className="min-h-screen bg-background text-foreground">
+      <AnimatePresence>
+        {loading && groups.length === 0 && (
+          <motion.div
+            key="loader"
+            className="flex items-center justify-center h-screen"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.5 } }}
+            exit={{ opacity: 0, transition: { duration: 0.3 } }}
+          >
+            <Loader />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            key="error"
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 mx-4"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0, transition: { duration: 0.4 } }}
+            exit={{ opacity: 0, y: -20, transition: { duration: 0.3 } }}
+          >
+            {error}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence mode="wait">
+        {!currentGroup && !loading && (
+          <motion.div
+            key="dashboard"
+            variants={fadeInUp}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <Dashboard
+              groups={groups.map(convertToGroupType)}
+              onCreateGroup={handleCreateGroup}
+              onOpenGroup={handleOpenGroup}
+            />
+          </motion.div>
+        )}
+
+        {currentGroup && group && !loading && (
+          <motion.div
+            key="groupDetail"
+            variants={fadeInUp}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <GroupDetail
+              group={convertToGroupType(group)}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              onBackToDashboard={() => setCurrentGroup(null)}
+              setSignal={setSignal}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 
