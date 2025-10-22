@@ -5,6 +5,7 @@ import { RecommendationsJSON, Result, Genre } from '@/app_types/recommendationsj
 import { userAuthStore } from '@/store/userAuthStore';
 import axios from 'axios';
 import RecommendationCarousel from '@/components/RecommendationsCarousel';
+import Loader from '@/components/Loader';
 
 // ---------- Horizontal Section ----------
 const ScrollRow: React.FC<{ title: string; movies: Result[] }> = ({ title, movies }) => {
@@ -139,7 +140,7 @@ const Recommendations: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
-        <p className="text-lg">Loading recommendations...</p>
+        <Loader />
       </div>
     );
   }
