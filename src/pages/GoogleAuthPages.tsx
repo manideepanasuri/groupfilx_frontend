@@ -15,7 +15,7 @@ export function GoogleSuccessAuth() {
         const tost_id=toast.loading("Please wait")
         verify_google(token).then(res=>{
           toast.success(res,{id:tost_id})
-          navigate("/home")
+          navigate("/groups")
         }).catch(err=>{
           toast.error(err.message,{id:tost_id})
           navigate("/login")
