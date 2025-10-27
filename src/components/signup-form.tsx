@@ -18,14 +18,23 @@ import {
 } from "@/components/ui/form"
 import { userAuthStore } from "@/store/userAuthStore.tsx";
 import { toast } from "sonner"
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2Icon } from "lucide-react";
+
+interface SignUpProps {
+  values: z.infer<typeof signupSchema>,
+  phrase: string,
+  phrase_answer: string,
+}
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+
+  const [phrase, setPhrase] = useState("");
+  const [phrase_answer, setPhraseAnswer] = useState("");
 
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
@@ -48,7 +57,8 @@ export function SignupForm({
     // ✅ This will be type-safe and validated.
     const tost_id = toast.loading("Please wait...")
     console.log(values)
-    signup(values).then(res => { toast.success(res, { id: tost_id }) }).catch(err => { toast.error(err.message, { id: tost_id }) })
+    const data : SignUpProps = {values, phrase, phrase_answer};
+    signup(data).then(res => { toast.success(res, { id: tost_id }) }).catch(err => { toast.error(err.message, { id: tost_id }) })
 
   }
   const { get_google_url } = userAuthStore()
@@ -133,6 +143,26 @@ export function SignupForm({
                       </FormItem>
                     )}
                   />
+                </div>
+                <div className="grid gap-3">
+                  <FormItem>
+                    <FormLabel>Phrase</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter the Phrase" value={phrase}
+                        onChange={(e) => setPhrase(e.target.value)} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </div>
+                <div className="grid gap-3">
+                  <FormItem>
+                    <FormLabel>Phrase Answer</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter the Phrase" value={phrase_answer}
+                        onChange={(e) => setPhraseAnswer(e.target.value)} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 </div>
                 {
                   is_loading ? <Button className="w-full" type="button" disabled> <Loader2Icon className="animate-spin" /> Please wait </Button> : <Button type="submit" className="w-full">

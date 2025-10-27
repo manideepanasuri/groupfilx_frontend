@@ -4,6 +4,18 @@ import {z} from "zod"
 import {changePasswordSchema, loginSchema, signupSchema} from "@/app_types/formtypes"
 import axios from "axios"
 
+// interface UserData {
+//   name: string;
+//   email: string;
+//   phrase: string;
+// }
+
+interface SignUpProps {
+  values: z.infer<typeof signupSchema>,
+  phrase: string,
+  phrase_answer: string,
+}
+
 export type usertype = {
   tokens: {
     refresh: string,
@@ -11,10 +23,11 @@ export type usertype = {
   }
   name: string,
   email: string,
+  phrase: string,
   is_authenticated: boolean,
   is_verified: boolean,
   is_loading: boolean,
-  signup: (form_data: z.infer<typeof signupSchema>) => Promise<string>,
+  signup: (form_data: SignUpProps) => Promise<string>,
   login: (form_data:z.infer<typeof loginSchema>) => Promise<string>,
   logout: () => Promise<string>,
   refresh:() => Promise<null>,
@@ -23,6 +36,7 @@ export type usertype = {
   get_verification_email: () => Promise<string>,
   get_change_password_url: (form_data:z.infer<typeof changePasswordSchema>) => Promise<string>,
   verify_change_password: (token: string) => Promise<string>,
+  phrase_check: (phraseAnswer: string) => Promise<string>,
 }
 const initialstate={
   tokens: {
@@ -31,6 +45,7 @@ const initialstate={
   },
   name: "",
   email: "",
+  phrase: "",
   is_authenticated: false,
   is_verified: false,
   is_loading: false,
@@ -65,19 +80,24 @@ export const userAuthStore = create<usertype>()(
               set({is_loading:true})
               const response = await axios(config)
               const data=response.data.data
-              set(
-                {
-                  tokens: {
-                    refresh: data.tokens.refresh,
-                    access: data.tokens.access,
-                  },
-                  name: data.name,
-                  email: data.email,
-                  is_authenticated: true,
-                  is_verified: data.is_verified,
-                  is_loading: false,
-                }
-              )
+              // set(
+              //   {
+              //     tokens: {
+              //       refresh: data.tokens.refresh,
+              //       access: data.tokens.access,
+              //     },
+              //     name: data.name,
+              //     email: data.email,
+              //     is_authenticated: true,
+              //     is_verified: data.is_verified,
+              //     is_loading: false,
+              //   }
+              // )
+              set({
+                name: data.name,
+                email: data.email,
+                phrase: data.phrase,
+              })
               return response.data.message
             } catch (error) {
               console.log(error)
@@ -88,15 +108,22 @@ export const userAuthStore = create<usertype>()(
               
             }
           },
-          signup: async (form_data: z.infer<typeof signupSchema>):Promise<string> => {
+          signup: async (form_data: SignUpProps):Promise<string> => {
             const url = import.meta.env.VITE_BACKEND_HOST + "api/auth/signup/"
+            console.log(form_data);
             const config = {
               url: url,         // path only; baseURL is already set
               method: 'post',
               headers: {
                 'Content-Type': 'application/json',
               },
-              data: form_data,
+              data: {
+                name: form_data.values.name,
+                email: form_data.values.email,
+                password: form_data.values.password,
+                phrase: form_data.phrase,
+                phrase_answer: form_data.phrase_answer,
+              },
             };
             try {
               set({is_loading:true})
@@ -111,7 +138,7 @@ export const userAuthStore = create<usertype>()(
                   name: data.name,
                   email: data.email,
                   is_authenticated: true,
-                  is_verified: data.is_verified,
+                  is_verified: true,
                   is_loading: false,
                 }
               )
@@ -307,6 +334,47 @@ export const userAuthStore = create<usertype>()(
 
             }
 
+          },
+          phrase_check: async (phraseAnswer: string):Promise<string> => {
+            set({is_loading:true})
+            const url = import.meta.env.VITE_BACKEND_HOST + "api/auth/phrase/"
+            const config={
+            url:url,
+              method:'post',
+              headers:{
+                'Content-Type':'application/json',
+              },
+              data:{
+                "email": get().email,
+                "phrase_answer": phraseAnswer
+              }
+            }
+            try {
+              set({is_loading:true})
+              const response = await axios(config)
+              const data=response.data.data
+              set(
+                {
+                  tokens: {
+                    refresh: data.tokens.refresh,
+                    access: data.tokens.access,
+                  },
+                  name: data.name,
+                  email: data.email,
+                  is_authenticated: true,
+                  is_verified: true,
+                  is_loading: false,
+                }
+              )
+              return response.data.message
+            } catch (error) {
+              console.log(error)
+              set({is_loading:false})
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-expect-error
+              throw  new Error(error?.response?.data?.message??"Something went wrong")
+              
+            }
           },
         }
       },
