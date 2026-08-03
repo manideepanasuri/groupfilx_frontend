@@ -8,16 +8,6 @@ Unlike traditional recommendation systems that optimize for one person's taste, 
 
 ---
 
-## Demo
-
-(Add screenshots/GIFs here)
-
-| Home | Group Recommendations | Movie Details |
-|------|-----------------------|---------------|
-| Screenshot | Screenshot | Screenshot |
-
----
-
 # Features
 
 ## Authentication
